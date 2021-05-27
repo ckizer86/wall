@@ -1,0 +1,25 @@
+.message {
+    background-color: #000;
+    color: #fff;
+    border-radius: 5px;
+    margin: 1em 0;
+    padding: 1em;
+}
+
+.comment {
+    padding: 0, 2em, 2em, 0;
+}
+
+.comment-message {
+    border: solid black;
+    border-radius: 5px;
+    color: #000;
+    padding: 1em;
+}
+
+.message-group {
+    border: solid black;
+    border-radius: 5px;
+    margin: 1em auto;
+    padding-bottom: 1em;
+}

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Wall</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous">
+    </script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous">
+    </script>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">Wall Assignment</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+
+            <ul class="navbar-nav ml-auto">
+                <li class="mr-3">Hello, {{request.session.username}} </li>
+                <li><a href="{% url 'login_app:login_logout' %}"> Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <form action="{% url 'wall_app:post_message' %}" method="post">
+                    <div class="form-group">
+                        {% csrf_token %}
+                        <label for="post">What's on your mind?</label>
+                        <textarea name="message" class="form-control" id="post" rows="3"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Post</button>
+                </form>
+            </div>
+        </div>
+
+
+        {% for message in messages reversed %}
+        <div class="row message-group">
+            <div class="col-12">
+                <p class="message">{{message.message}}<br /> {% if message.poster.id == request.session.user_id %}
+                    <a href="/wall/destroy_message/{{message.id}}">Delete Message</a> {% endif %}
+                </p>
+            </div>
+
+
+            <div class="col-12 comment">
+                {% for comment in message.msgcomment.all %}
+                <p class="comment-message">Comment from {{comment.commenter.first_name}} {{comment.commenter.last_name}}: <br /> {{comment.comment}}<br /> {% if comment.commenter.id == request.session.user_id %}
+                    <a href="/wall/destroy_comment/{{comment.id}}">Delete Comment</a>{% endif %}</p>
+                {% endfor %}
+                <form action="{% url 'wall_app:post_comment' %}" method="post">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="comment">Post your comment</label>
+                        <input type="text" name="comment" class="form-control" id="comment">
+                        <input type="hidden" name="messagepost" value="{{message.id}}">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Comment</button>
+                </form>
+
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</body>
+
+</html>

@@ -50,8 +50,9 @@
         {% for message in messages reversed %}
         <div class="row message-group">
             <div class="col-12">
-                <p class="message">{{message.message}}<br /> {% if message.poster.id == request.session.user_id %}
+                <p class="message">Message from: {{message.poster.first_name}} {{message.poster.last_name}}<br />{{message.message}}<br /> {% if message.poster.id == request.session.user_id %}
                     <a href="/wall/destroy_message/{{message.id}}">Delete Message</a> {% endif %}
+                    <br />Created: {{message.created_at}}
                 </p>
             </div>
 
@@ -59,7 +60,7 @@
             <div class="col-12 comment">
                 {% for comment in message.msgcomment.all %}
                 <p class="comment-message">Comment from {{comment.commenter.first_name}} {{comment.commenter.last_name}}: <br /> {{comment.comment}}<br /> {% if comment.commenter.id == request.session.user_id %}
-                    <a href="/wall/destroy_comment/{{comment.id}}">Delete Comment</a>{% endif %}</p>
+                    <a href="/wall/destroy_comment/{{comment.id}}">Delete Comment</a>{% endif %}<br />Created: {{comment.created_at}}</p>
                 {% endfor %}
                 <form action="{% url 'wall_app:post_comment' %}" method="post">
                     {% csrf_token %}
